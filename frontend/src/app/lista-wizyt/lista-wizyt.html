@@ -1,0 +1,276 @@
+<div [hidden]="!auth.hasAnyRole(0,1,2)">
+  <div class="header-section">
+    <h2>{{ 'APPOINTMENTS_LIST.TITLE' | translate }}</h2>
+    <p>{{ 'APPOINTMENTS_LIST.SUBTITLE' | translate }}</p>
+  </div>
+
+  <div class="filter-section" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+    <mat-form-field appearance="outline" class="date-filter">
+      <mat-label>{{ 'APPOINTMENTS_LIST.DATE_PICKER_LABEL' | translate }}</mat-label>
+      <input matInput [matDatepicker]="picker" [(ngModel)]="wybranaData" (dateChange)="onDataChange()">
+      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+
+    <div class="neon-search-container">
+      <input type="checkbox" id="szukaj-lista" class="search-checkbox">
+      <label for="szukaj-lista" class="search-button" (click)="szukajWizytyPoId()">
+        <mat-icon class="icon-search">search</mat-icon>
+        <mat-icon class="icon-close">close</mat-icon>
+      </label>
+      <input
+        type="text"
+        class="search-input"
+        [placeholder]="'APPOINTMENTS_LIST.SEARCH_PLACEHOLDER' | translate"
+        [(ngModel)]="szukanyNumer"
+        (keyup.enter)="szukajWizytyPoId()"
+      >
+    </div>
+  </div>
+
+  <div class="doctor-date-header">
+    <button
+      mat-icon-button
+      class="arrow-btn"
+      (click)="zmienDzien(-1)"
+      [matTooltip]="'APPOINTMENTS_LIST.TOOLTIP_PREV_DAY' | translate"
+    >
+      <mat-icon>arrow_back_ios_new</mat-icon>
+    </button>
+
+    <h3>
+      {{ 'APPOINTMENTS_LIST.DATE_HEADER_PREF' | translate }}
+      <span>{{ wybranaData | date:'dd.MM.yyyy' }}</span>
+    </h3>
+
+    <button
+      mat-icon-button
+      class="arrow-btn"
+      (click)="zmienDzien(1)"
+      [matTooltip]="'APPOINTMENTS_LIST.TOOLTIP_NEXT_DAY' | translate"
+    >
+      <mat-icon>arrow_forward_ios</mat-icon>
+    </button>
+  </div>
+
+  <div class="mobile-visits" *ngIf="wizyty.length > 0">
+    <article class="mobile-visit-card" *ngFor="let element of wizyty">
+      <header class="mobile-card-header">
+        <div>
+          <span class="mobile-visit-number">#{{ element.id }}</span>
+          <strong class="mobile-visit-time">
+            <mat-icon>schedule</mat-icon>
+            {{ tylkoGodzina(element.data) }}
+          </strong>
+        </div>
+
+        <span
+          class="status-badge"
+          [ngClass]="{
+            'zaplanowana': element.status.toUpperCase() === 'ZAPLANOWANA',
+            'odbyta': element.status.toUpperCase() === 'ODBYTA',
+            'anulowana': element.status.toUpperCase() === 'ANULOWANA'
+          }"
+        >
+          {{ 'STATUS.' + element.status.toUpperCase() | translate }}
+        </span>
+      </header>
+
+      <div class="mobile-card-details">
+        <div class="mobile-detail">
+          <span>{{ 'APPOINTMENTS_LIST.COL_PATIENT' | translate }}</span>
+          <strong>{{ element.pacjent_nazwa }}</strong>
+        </div>
+
+        <div class="mobile-detail">
+          <span>{{ 'APPOINTMENTS_LIST.COL_DOCTOR' | translate }}</span>
+          <strong>
+            {{ 'APPOINTMENTS_LIST.DOCTOR_PREFIX' | translate }}
+            {{ element.lekarz_nazwa }}
+          </strong>
+        </div>
+
+        <div class="mobile-detail">
+          <span>{{ 'APPOINTMENTS_LIST.COL_ROOM' | translate }}</span>
+          <strong>
+            {{ 'APPOINTMENTS_LIST.ROOM_PREFIX' | translate }}
+            {{ element.numer_gabinetu }}
+          </strong>
+        </div>
+
+        <div class="mobile-detail">
+          <span>{{ 'APPOINTMENTS_LIST.DATE_PICKER_LABEL' | translate }}</span>
+          <strong>{{ element.data | date:'dd.MM.yyyy' }}</strong>
+        </div>
+      </div>
+
+      <div class="mobile-visit-note" *ngIf="element.uwagi_do_statusu">
+        <span>{{ 'EDIT_APPOINTMENT_ADMIN.NOTES' | translate }}</span>
+        <p>{{ element.uwagi_do_statusu }}</p>
+      </div>
+
+      <div
+        class="mobile-card-actions"
+        *ngIf="element.status.toLowerCase() === 'zaplanowana' || auth.hasAnyRole(0)"
+      >
+        <ng-container *ngIf="element.status.toLowerCase() === 'zaplanowana'">
+          <button
+            type="button"
+            class="neon-badge-red"
+            *ngIf="auth.hasAnyRole(0, 2)"
+            (click)="zmienStatus(element.id, 'Anulowana')"
+          >
+            <mat-icon>cancel</mat-icon>
+            {{ 'APPOINTMENTS_LIST.BTN_CANCEL' | translate }}
+          </button>
+
+          <button
+            type="button"
+            class="neon-badge-blue"
+            *ngIf="auth.hasAnyRole(0, 1)"
+            [disabled]="czyWizytaWPrzyszlosci(element.data)"
+            (click)="zakonczWizyte(element.id)"
+          >
+            <mat-icon>check_circle</mat-icon>
+            {{ 'APPOINTMENTS_LIST.BTN_COMPLETED' | translate }}
+          </button>
+        </ng-container>
+
+        <button
+          type="button"
+          class="neon-badge-blue mobile-edit-btn"
+          *ngIf="auth.hasAnyRole(0)"
+          (click)="edytujWizyteJakoAdmin(element)"
+        >
+          <mat-icon>edit_note</mat-icon>
+          {{ 'APPOINTMENTS_LIST.TOOLTIP_EDIT' | translate }}
+        </button>
+      </div>
+    </article>
+  </div>
+
+  <div class="empty-state mobile-empty" *ngIf="wizyty.length === 0">
+    <mat-icon>event_busy</mat-icon>
+    <p>{{ 'APPOINTMENTS_LIST.EMPTY_STATE' | translate }}</p>
+  </div>
+
+  <div class="table-container mat-elevation-z8 desktop-visits">
+    <table mat-table [dataSource]="wizyty" class="wizyty-table">
+      <ng-container matColumnDef="data">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'APPOINTMENTS_LIST.COL_NR_TIME' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <span style="color: var(--primary); font-weight: 900; margin-right: 10px; font-size: 15px;">
+            #{{ element.id }}
+          </span>
+          <mat-icon class="inline-icon">schedule</mat-icon>
+          <span *ngIf="auth.hasAnyRole(1); else pelnaData">
+            <strong>{{ tylkoGodzina(element.data) }}</strong>
+          </span>
+          <ng-template #pelnaData>{{ element.data }}</ng-template>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="pacjent">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'APPOINTMENTS_LIST.COL_PATIENT' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <strong>{{ element.pacjent_nazwa }}</strong>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="lekarz">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'APPOINTMENTS_LIST.COL_DOCTOR' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{ 'APPOINTMENTS_LIST.DOCTOR_PREFIX' | translate }} {{ element.lekarz_nazwa }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="gabinet">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'APPOINTMENTS_LIST.COL_ROOM' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          {{ 'APPOINTMENTS_LIST.ROOM_PREFIX' | translate }} {{ element.numer_gabinetu }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'APPOINTMENTS_LIST.COL_STATUS' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <span
+            [ngClass]="{
+              'neon-badge-blue': element.status.toUpperCase() === 'ZAPLANOWANA',
+              'neon-badge-green': element.status.toUpperCase() === 'ODBYTA',
+              'neon-badge-red': element.status.toUpperCase() === 'ANULOWANA'
+            }"
+          >
+            {{ 'STATUS.' + element.status.toUpperCase() | translate }}
+          </span>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="akcje">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'APPOINTMENTS_LIST.COL_ACTIONS' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <div class="action-buttons">
+            <ng-container *ngIf="element.status.toLowerCase() === 'zaplanowana'">
+              <button
+                type="button"
+                class="neon-badge-red"
+                *ngIf="auth.hasAnyRole(0, 2)"
+                (click)="zmienStatus(element.id, 'Anulowana')"
+              >
+                <mat-icon>cancel</mat-icon>
+                {{ 'APPOINTMENTS_LIST.BTN_CANCEL' | translate }}
+              </button>
+
+              <button
+                type="button"
+                class="neon-badge-blue"
+                *ngIf="auth.hasAnyRole(0, 1)"
+                [disabled]="czyWizytaWPrzyszlosci(element.data)"
+                (click)="zakonczWizyte(element.id)"
+              >
+                <mat-icon>check_circle</mat-icon>
+                {{ 'APPOINTMENTS_LIST.BTN_COMPLETED' | translate }}
+              </button>
+            </ng-container>
+
+            <button
+              mat-icon-button
+              style="color: #f44336;"
+              *ngIf="auth.hasAnyRole(0)"
+              [matTooltip]="'APPOINTMENTS_LIST.TOOLTIP_EDIT' | translate"
+              (click)="edytujWizyteJakoAdmin(element)"
+            >
+              <mat-icon>edit_note</mat-icon>
+            </button>
+          </div>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="wywietlaneKolumny"></tr>
+      <tr mat-row *matRowDef="let row; columns: wywietlaneKolumny;"></tr>
+    </table>
+
+    <div class="empty-state" *ngIf="wizyty.length === 0">
+      <mat-icon>event_busy</mat-icon>
+      <p>{{ 'APPOINTMENTS_LIST.EMPTY_STATE' | translate }}</p>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="!auth.hasAnyRole(0,1,2)" class="locked-container">
+  <mat-icon class="huge-lock">lock</mat-icon>
+  <h2>{{ 'COMMON.LOCKED_TITLE' | translate }}</h2>
+  <p>{{ 'COMMON.LOCKED_LOGIN_DESC' | translate }}</p>
+</div>

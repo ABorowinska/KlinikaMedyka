@@ -1,0 +1,133 @@
+<main class="landing-container">
+  <section class="slider-section" (mouseenter)="zatrzymajSlider()" (mouseleave)="startSlider()">
+    <header class="section-intro hero-intro">
+      <span class="eyebrow">{{ 'HOME.HERO_SUBTITLE' | translate }}</span>
+      <h1>{{ 'HOME.HERO_TITLE' | translate }}</h1>
+      <p>{{ 'HOME.HERO_INTRO' | translate }}</p>
+    </header>
+
+    <div class="slider-shell">
+      <div class="slider-container">
+        <img
+          *ngFor="let slajd of slajdy; let i = index"
+          [src]="slajd"
+          [alt]="('HOME.SLIDE_ALT' | translate) + ' ' + (i + 1)"
+          class="slider-image"
+          [class.active]="i === aktualnySlajd"
+        >
+
+        <button
+          type="button"
+          class="slider-btn prev"
+          (click)="poprzedniSlajd()"
+          [attr.aria-label]="'HOME.PREV_SLIDE' | translate"
+        ><mat-icon>chevron_left</mat-icon></button>
+
+        <button
+          type="button"
+          class="slider-btn next"
+          (click)="nastepnySlajd()"
+          [attr.aria-label]="'HOME.NEXT_SLIDE' | translate"
+        ><mat-icon>chevron_right</mat-icon></button>
+      </div>
+
+      <div class="slider-toolbar">
+        <div class="slide-progress" aria-live="polite">
+          <span class="slide-number">0{{ aktualnySlajd + 1 }}</span>
+          <span class="slide-total">/ 0{{ slajdy.length }}</span>
+          <span class="progress-track" aria-hidden="true">
+            <span class="progress-value" [style.width.%]="((aktualnySlajd + 1) / slajdy.length) * 100"></span>
+          </span>
+        </div>
+
+        <div class="slider-dots" [attr.aria-label]="'HOME.CHOOSE_SLIDE' | translate">
+          <button
+            *ngFor="let slajd of slajdy; let i = index"
+            type="button"
+            class="dot"
+            [class.active]="i === aktualnySlajd"
+            [attr.aria-label]="('HOME.SLIDE_ALT' | translate) + ' ' + (i + 1)"
+            [attr.aria-current]="i === aktualnySlajd ? 'true' : null"
+            (click)="wybierzSlajd(i)"
+          ></button>
+        </div>
+
+        <div class="hero-actions">
+          <a routerLink="/kalendarz" class="landing-btn primary-btn">
+            <mat-icon>calendar_month</mat-icon>
+            {{ 'HOME.BOOK_VISIT' | translate }}
+          </a>
+          <a routerLink="/lekarze" class="landing-btn secondary-btn">
+            {{ 'HOME.MEET_DOCTORS' | translate }}
+            <mat-icon>arrow_forward</mat-icon>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="about-section page-section">
+    <header class="section-intro">
+      <span class="eyebrow">{{ 'HOME.ABOUT_EYEBROW' | translate }}</span>
+      <h2>{{ 'HOME.ABOUT_TITLE' | translate }}</h2>
+      <p class="about-text">{{ 'HOME.ABOUT_TEXT' | translate }}</p>
+    </header>
+  </section>
+
+  <section class="features-section page-section">
+    <header class="section-intro">
+      <span class="eyebrow">{{ 'HOME.CARE_EYEBROW' | translate }}</span>
+      <h2>{{ 'HOME.WHY_US_TITLE' | translate }}</h2>
+      <p>{{ 'HOME.WHY_US_TEXT' | translate }}</p>
+    </header>
+
+    <div class="features-grid">
+      <article class="feature-card">
+        <span class="feature-icon"><mat-icon>psychology</mat-icon></span>
+        <h3>{{ 'HOME.WHY_1' | translate }}</h3>
+        <p>{{ 'HOME.WHY_1_DESC' | translate }}</p>
+      </article>
+      <article class="feature-card">
+        <span class="feature-icon"><mat-icon>science</mat-icon></span>
+        <h3>{{ 'HOME.WHY_2' | translate }}</h3>
+        <p>{{ 'HOME.WHY_2_DESC' | translate }}</p>
+      </article>
+      <article class="feature-card">
+        <span class="feature-icon"><mat-icon>schedule</mat-icon></span>
+        <h3>{{ 'HOME.WHY_3' | translate }}</h3>
+        <p>{{ 'HOME.WHY_3_DESC' | translate }}</p>
+      </article>
+      <article class="feature-card">
+        <span class="feature-icon"><mat-icon>favorite</mat-icon></span>
+        <h3>{{ 'HOME.WHY_4' | translate }}</h3>
+        <p>{{ 'HOME.WHY_4_DESC' | translate }}</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="reviews-section page-section">
+    <div class="reviews-shell">
+      <div class="reviews-heading">
+        <div>
+          <span class="eyebrow">{{ 'HOME.REVIEWS_EYEBROW' | translate }}</span>
+          <h2>{{ 'HOME.REVIEWS_TITLE' | translate }}</h2>
+        </div>
+        <span class="reviews-score" aria-label="5 na 5">★★★★★ <strong>4,8</strong></span>
+      </div>
+
+      <div class="reviews-grid">
+        <blockquote class="review-card">
+          <mat-icon class="quote-icon">format_quote</mat-icon>
+          <p>{{ 'HOME.REVIEW_1' | translate }}</p>
+          <footer><span class="review-avatar">AK</span><strong>{{ 'HOME.REVIEW_AUTHOR_1' | translate }}</strong></footer>
+        </blockquote>
+        <blockquote class="review-card">
+          <mat-icon class="quote-icon">format_quote</mat-icon>
+          <p>{{ 'HOME.REVIEW_2' | translate }}</p>
+          <footer><span class="review-avatar">MP</span><strong>{{ 'HOME.REVIEW_AUTHOR_2' | translate }}</strong></footer>
+        </blockquote>
+      </div>
+    </div>
+  </section>
+
+</main>

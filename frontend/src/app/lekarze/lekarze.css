@@ -1,0 +1,184 @@
+.header-section {
+  padding: 20px 30px 10px 30px;
+  color: var(--text-main);
+}
+.header-section h2 {
+  margin: 0;
+  font-size: 28px;
+  color: var(--primary);
+}
+.header-section p {
+  opacity: 0.7;
+  font-size: 15px;
+}
+
+.cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); 
+  gap: 20px; 
+  padding: 20px 30px;
+}
+
+::ng-deep .lekarz-card {
+  background-color: var(--bg-sidebar) !important;
+  border: 1px solid var(--border-color) !important;
+  color: var(--text-main) !important;
+  border-radius: 12px !important;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+::ng-deep .lekarz-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(46, 142, 255, 0.2) !important;
+  border-color: var(--primary) !important;
+}
+
+.lekarz-avatar {
+  background-color: rgba(46, 142, 255, 0.1) !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  height: 45px !important;
+  width: 45px !important;
+}
+
+.lekarz-nazwisko {
+  color: var(--text-main) !important;
+  font-size: 17px !important;
+  font-weight: bold !important;
+}
+
+.lekarz-specjalizacja {
+  color: var(--primary) !important;
+  font-weight: 500 !important;
+  font-size: 13px !important;
+  margin-top: 2px !important;
+}
+
+.lekarz-content {
+  padding: 10px 16px 15px 16px !important;
+}
+
+.gabinet-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; 
+  background-color: rgba(255, 255, 255, 0.05);
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.gabinet-info mat-icon {
+  color: var(--primary);
+}
+
+.edit-gabinet-btn {
+  width: 32px !important;
+  height: 32px !important;
+  padding: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  background-color: rgba(0, 195, 255, 0.1) !important;
+  color: #00c3ff !important;
+  border-radius: 6px !important;
+  transition: all 0.2s ease !important;
+}
+.edit-gabinet-btn:hover {
+  background-color: #00c3ff !important;
+  color: #ffffff !important;
+  box-shadow: 0 0 10px rgba(0, 195, 255, 0.5) !important;
+}
+.edit-gabinet-btn mat-icon {
+  font-size: 16px !important;
+  width: 16px !important;
+  height: 16px !important;
+  color: inherit !important; 
+}
+
+.lekarz-actions {
+  display: flex;
+  width: 100%;
+  box-sizing: border-box; 
+}
+
+button.neon-btn-blue-primary {
+  background-color: rgba(46, 142, 255, 0.15) !important;
+  border: 1px solid var(--primary) !important;
+  color: var(--primary) !important;
+  border-radius: 10px !important;
+  box-shadow: 0 0 8px rgba(46, 142, 255, 0.4) !important;
+  transition: all 0.3s ease !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  height: 42px !important;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+  cursor: pointer;
+  width: 100%; 
+  box-sizing: border-box; 
+}
+
+button.neon-btn-blue-primary:hover {
+  background-color: rgba(46, 142, 255, 0.4) !important;
+  box-shadow: 0 0 15px rgba(46, 142, 255, 0.8) !important;
+  color: #ffffff !important;
+}
+button.neon-btn-blue-primary mat-icon {
+  color: inherit !important; 
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+}
+
+button.neon-btn-blue-secondary {
+  background-color: rgba(0, 195, 255, 0.1) !important;
+  border: 1px solid #00c3ff !important;
+  color: #00c3ff !important;
+  border-radius: 8px !important;
+  box-shadow: 0 0 8px rgba(0, 195, 255, 0.4) !important;
+  transition: all 0.3s ease !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600 !important;
+  cursor: pointer;
+}
+button.neon-btn-blue-secondary:hover {
+  background-color: rgba(0, 195, 255, 0.4) !important;
+  box-shadow: 0 0 15px rgba(0, 195, 255, 0.8) !important;
+  color: #ffffff !important;
+}
+button.neon-btn-blue-secondary:disabled {
+  background-color: transparent !important;
+  border-color: gray !important;
+  color: gray !important;
+  box-shadow: none !important;
+  cursor: not-allowed;
+}
+
+.locked-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 60vh; 
+  text-align: center;
+  color: var(--text-main);
+}
+.locked-container[hidden] {
+  display: none !important;
+}
+.huge-lock {
+  font-size: 80px;
+  width: 80px;
+  height: 80px;
+  color: var(--primary); 
+  margin-bottom: 20px;
+  opacity: 0.9;
+}
+

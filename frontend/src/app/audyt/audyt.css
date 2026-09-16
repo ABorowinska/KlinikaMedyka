@@ -1,0 +1,60 @@
+.audyt-container {
+  padding: 30px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+::ng-deep .audyt-container table {
+  background-color: transparent !important;
+}
+
+::ng-deep .audyt-container th.mat-mdc-header-cell,
+::ng-deep .audyt-container th.mat-header-cell {
+  color: var(--primary) !important;
+  font-weight: bold !important;
+  border-bottom: 1px solid var(--border-color) !important;
+}
+
+::ng-deep .audyt-container td.mat-mdc-cell,
+::ng-deep .audyt-container td.mat-cell,
+::ng-deep .audyt-container td.mat-mdc-cell strong,
+::ng-deep .audyt-container td.mat-cell strong {
+  color: var(--text-main) !important;
+  border-bottom: 1px solid var(--border-color) !important;
+}
+
+::ng-deep .audyt-container td .neon-badge-blue {
+  background-color: rgba(46, 142, 255, 0.1) !important;
+  border: 1px solid var(--primary) !important;
+  color: var(--primary) !important;
+  box-shadow: 0 0 8px rgba(46, 142, 255, 0.4) !important;
+  border-radius: 8px !important;
+  padding: 6px 12px !important;
+  font-weight: 600 !important;
+  display: inline-flex;
+}
+
+::ng-deep .audyt-container tr.mat-mdc-row:hover,
+::ng-deep .audyt-container tr.mat-row:hover {
+  background-color: rgba(46, 142, 255, 0.05) !important;
+  transition: background-color 0.2s ease;
+}
+
+.locked-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 60vh; 
+  text-align: center;
+  color: var(--text-main);
+}
+
+.huge-lock {
+  font-size: 80px;
+  width: 80px;
+  height: 80px;
+  color:  #183153; 
+  margin-bottom: 20px;
+  opacity: 0.9;
+}

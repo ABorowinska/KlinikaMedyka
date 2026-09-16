@@ -1,0 +1,40 @@
+<div class="header-section">
+  <h2>{{ 'DOCTORS_LIST.TITLE' | translate }}</h2>
+  <p>{{ 'DOCTORS_LIST.SUBTITLE' | translate }}</p>
+</div>
+
+<div class="cards-grid">
+  @for (lekarz of lekarze; track lekarz.id) {
+    <mat-card class="lekarz-card mat-elevation-z4">
+      <mat-card-header style="padding-bottom: 10px;">
+        <div mat-card-avatar class="lekarz-avatar">
+          <mat-icon style="color: var(--primary);">medical_services</mat-icon>
+        </div>
+        <mat-card-title class="lekarz-nazwisko">{{ 'DOCTORS_LIST.PREFIX' | translate }} {{ lekarz.imie }} {{ lekarz.nazwisko }}</mat-card-title>
+        <mat-card-subtitle class="lekarz-specjalizacja">{{ lekarz.specjalizacja }}</mat-card-subtitle>
+      </mat-card-header>
+      
+      <mat-card-content class="lekarz-content">
+        <div class="gabinet-info">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <mat-icon style="font-size: 20px; width: 20px; height: 20px;">meeting_room</mat-icon>
+            <span>{{ 'DOCTORS_LIST.ROOM_LABEL' | translate }} <strong>{{ lekarz.gabinet }}</strong></span>
+          </div>
+          
+          <button mat-icon-button class="edit-gabinet-btn" 
+                  *ngIf="auth.hasAnyRole(0)" 
+                  (click)="zmienGabinet(lekarz)"
+                  [matTooltip]="'DOCTORS_LIST.TOOLTIP_EDIT_ROOM' | translate">
+            <mat-icon>edit</mat-icon>
+          </button>
+        </div>
+      </mat-card-content>
+      
+      <div class="lekarz-actions" *ngIf="auth.user()" style="padding: 0 16px 16px 16px;">
+        <button class="neon-btn-blue-primary" *ngIf="auth.hasAnyRole(0, 2)" (click)="umowWizyte(lekarz)">
+          <mat-icon>event</mat-icon> {{ 'DOCTORS_LIST.BTN_SCHEDULE' | translate }}
+        </button>
+      </div>
+    </mat-card>
+  }
+</div>

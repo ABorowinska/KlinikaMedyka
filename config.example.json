@@ -1,0 +1,12 @@
+{
+  "port": 4000,
+  "frontend": "frontend/dist/frontend/browser",
+  "api": "/api",
+  "dbfilename": "./data/przychodnia.sqlite3",
+  "sysDbFilename": "./data/sys.sqlite3",
+  "sessionSecret": "WPISZ_WLASNY_KLUCZ",
+  "sessionMaxAge": 86400000,
+  "adminPassword": "WPISZ_HASLO",
+  "recepcjaPassword": "WPISZ_HASLO",
+  "lekarzPassword": "WPISZ_HASLO"
+}

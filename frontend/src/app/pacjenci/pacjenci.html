@@ -1,0 +1,126 @@
+<div [hidden]="!auth.hasAnyRole(0,1,2)" class="patients-page">
+  <div class="patients-toolbar">
+    <div class="neon-search-container">
+      <input type="checkbox" id="szukaj-pacjent" class="search-checkbox">
+      <label for="szukaj-pacjent" class="search-button">
+        <mat-icon class="icon-search">search</mat-icon>
+        <mat-icon class="icon-close">close</mat-icon>
+      </label>
+      <input type="text" class="search-input" [placeholder]="'PATIENTS_RECORD.SEARCH_PLACEHOLDER' | translate" (keyup)="zastosujFiltr($event)" #input>
+    </div>
+  </div>
+
+  <div class="table-container mat-elevation-z8">
+    <div class="desktop-patients">
+      <table mat-table [dataSource]="dataSource" matSort class="mat-mdc-table">
+      
+      <ng-container matColumnDef="id">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'PATIENTS_RECORD.COL_ID' | translate }} </th>
+        <td mat-cell *matCellDef="let pacjent"> {{ pacjent.id }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="imie">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'PATIENTS_RECORD.COL_NAME' | translate }} </th>
+        <td mat-cell *matCellDef="let pacjent"> {{ pacjent.imie }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="nazwisko">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'PATIENTS_RECORD.COL_SURNAME' | translate }} </th>
+        <td mat-cell *matCellDef="let pacjent"> {{ pacjent.nazwisko }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="pesel">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'PATIENTS_RECORD.COL_PESEL' | translate }} </th>
+        <td mat-cell *matCellDef="let pacjent"> {{ pacjent.pesel }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="data_urodzenia">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ 'PATIENTS_RECORD.COL_DOB' | translate }} </th>
+        <td mat-cell *matCellDef="let pacjent"> {{ pacjent.data_urodzenia }} </td>
+      </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr
+          mat-row
+          *matRowDef="let row; columns: displayedColumns;"
+          class="klikany-wiersz"
+          (click)="otworzHistorie(row)"
+        ></tr>
+      </table>
+    </div>
+
+    <div class="mobile-sort-bar">
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'PATIENTS_RECORD.SORT_BY' | translate }}</mat-label>
+        <mat-select
+  panelClass="patient-sort-panel"
+  [(ngModel)]="mobileSortColumn"
+  (selectionChange)="sortujMobile()"
+>
+          <mat-option value="id">{{ 'PATIENTS_RECORD.COL_ID' | translate }}</mat-option>
+          <mat-option value="imie">{{ 'PATIENTS_RECORD.COL_NAME' | translate }}</mat-option>
+          <mat-option value="nazwisko">{{ 'PATIENTS_RECORD.COL_SURNAME' | translate }}</mat-option>
+          <mat-option value="pesel">{{ 'PATIENTS_RECORD.COL_PESEL' | translate }}</mat-option>
+          <mat-option value="data_urodzenia">{{ 'PATIENTS_RECORD.COL_DOB' | translate }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <button
+        type="button"
+        class="mobile-sort-direction"
+        (click)="zmienKierunekSortowania()"
+        [attr.aria-label]="(mobileSortDirection === 'asc' ? 'PATIENTS_RECORD.SORT_ASC' : 'PATIENTS_RECORD.SORT_DESC') | translate"
+        [matTooltip]="(mobileSortDirection === 'asc' ? 'PATIENTS_RECORD.SORT_ASC' : 'PATIENTS_RECORD.SORT_DESC') | translate"
+      >
+        <mat-icon>{{ mobileSortDirection === 'asc' ? 'arrow_upward' : 'arrow_downward' }}</mat-icon>
+      </button>
+    </div>
+
+    <div class="mobile-patients">
+      <article
+        *ngFor="let pacjent of pacjenciNaStronie"
+        class="patient-card"
+        role="button"
+        tabindex="0"
+        (click)="otworzHistorie(pacjent)"
+        (keydown.enter)="otworzHistorie(pacjent)"
+      >
+        <div class="patient-card-header">
+          <div class="patient-avatar">
+            {{ pacjent.imie?.charAt(0) }}{{ pacjent.nazwisko?.charAt(0) }}
+          </div>
+          <div class="patient-name">
+            <span>{{ 'PATIENTS_RECORD.COL_ID' | translate }}: {{ pacjent.id }}</span>
+            <h3>{{ pacjent.imie }} {{ pacjent.nazwisko }}</h3>
+          </div>
+          <mat-icon class="patient-card-arrow">chevron_right</mat-icon>
+        </div>
+
+        <div class="patient-card-details">
+          <div>
+            <span>{{ 'PATIENTS_RECORD.COL_PESEL' | translate }}</span>
+            <strong>{{ pacjent.pesel }}</strong>
+          </div>
+          <div>
+            <span>{{ 'PATIENTS_RECORD.COL_DOB' | translate }}</span>
+            <strong>{{ pacjent.data_urodzenia }}</strong>
+          </div>
+        </div>
+      </article>
+    </div>
+
+   <mat-paginator
+  [pageSize]="10"
+  [pageSizeOptions]="[10, 25, 50]"
+  [selectConfig]="{ panelClass: 'patient-page-size-panel' }"
+  showFirstLastButtons
+  (page)="zmienStroneMobile($event)">
+</mat-paginator>
+  </div>
+</div>
+
+<div *ngIf="!auth.hasAnyRole(0,1,2)" class="locked-container">
+  <mat-icon class="huge-lock">lock</mat-icon>
+  <h2>{{ 'COMMON.LOCKED_TITLE' | translate }}</h2>
+  <p>{{ 'COMMON.LOCKED_LOGIN_DESC' | translate }}</p>
+</div>

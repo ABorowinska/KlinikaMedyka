@@ -1,0 +1,76 @@
+<div [hidden]="!auth.hasAnyRole(0,2)">
+
+  <div class="header-section">
+    <h2>{{ 'APPOINTMENT_REGISTRATION.TITLE' | translate }}</h2>
+    <p>{{ 'APPOINTMENT_REGISTRATION.SUBTITLE' | translate }}</p>
+  </div>
+
+  <div class="form-container">
+    <mat-card class="form-card mat-elevation-z8">
+      <mat-card-content>
+        <form class="wizyta-form" (ngSubmit)="zapiszWizyte()">
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>{{ 'APPOINTMENT_REGISTRATION.SELECT_PATIENT' | translate }}</mat-label>
+            <mat-select [(ngModel)]="nowaWizyta.pacjentId" name="pacjent" required>
+              @for (pacjent of pacjenci; track pacjent.id) {
+              <mat-option [value]="pacjent.id">
+                {{ pacjent.imie }} {{ pacjent.nazwisko }} ({{ 'ADMIN_PANEL.LBL_PESEL' | translate }}: {{ pacjent.pesel
+                }})
+              </mat-option>
+              }
+            </mat-select>
+            <mat-icon matPrefix class="form-icon">person</mat-icon>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>{{ 'APPOINTMENT_REGISTRATION.SELECT_DOCTOR' | translate }}</mat-label>
+            <mat-select [(ngModel)]="nowaWizyta.lekarzId" name="lekarz" required>
+              @for (lekarz of lekarze; track lekarz.id) {
+              <mat-option [value]="lekarz.id">
+                dr {{ lekarz.imie }} {{ lekarz.nazwisko }} - {{ lekarz.specjalizacja }}
+              </mat-option>
+              }
+            </mat-select>
+            <mat-icon matPrefix class="form-icon">medical_services</mat-icon>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>{{ 'APPOINTMENT_REGISTRATION.SELECT_DATE' | translate }}</mat-label>
+            <input matInput [matDatepicker]="picker" [matDatepickerFilter]="mojFiltrDaty" [(ngModel)]="nowaWizyta.data"
+              name="data" (dateChange)="odswiezDostepneGodziny()">
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>{{ 'APPOINTMENT_REGISTRATION.SELECT_TIME' | translate }}</mat-label>
+            <mat-select [(ngModel)]="nowaWizyta.godzina" name="godzina">
+              <mat-option *ngFor="let godz of dostepneGodziny" [value]="godz">{{ godz }}</mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="form-field full-width">
+            <mat-label>{{ 'APPOINTMENT_REGISTRATION.NOTES' | translate }}</mat-label>
+            <textarea matInput [(ngModel)]="nowaWizyta.notatka" name="notatka" rows="3"
+              [placeholder]="'APPOINTMENT_REGISTRATION.NOTES_PLACEHOLDER' | translate"></textarea>
+            <mat-icon matPrefix class="form-icon">edit_note</mat-icon>
+          </mat-form-field>
+
+          <div class="form-actions full-width">
+            <button mat-flat-button color="primary" type="submit" class="submit-btn">
+              <mat-icon>save</mat-icon> {{ 'APPOINTMENT_REGISTRATION.BTN_SAVE' | translate }}
+            </button>
+          </div>
+
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
+
+<div *ngIf="!auth.hasAnyRole(0,1,2)" class="locked-container">
+  <mat-icon class="huge-lock">lock</mat-icon>
+  <h2>{{ 'COMMON.LOCKED_TITLE' | translate }}</h2>
+  <p>{{ 'COMMON.LOCKED_LOGIN_DESC' | translate }}</p>
+</div>

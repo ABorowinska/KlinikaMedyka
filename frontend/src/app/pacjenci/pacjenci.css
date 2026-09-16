@@ -1,0 +1,482 @@
+
+
+.klikany-wiersz {
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.klikany-wiersz:hover {
+  background-color: rgba(46, 142, 255, 0.08) !important;
+}
+
+.patients-page {
+  width: 100%;
+}
+
+.patients-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin: 0 20px 20px;
+}
+
+.desktop-patients {
+  display: block;
+}
+
+.mobile-patients {
+  display: none;
+}
+
+.mobile-sort-bar {
+  display: none;
+}
+
+::ng-deep .table-container,
+::ng-deep .mat-elevation-z8 {
+  background-color: var(--bg-sidebar) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 12px;
+  overflow: auto !important;
+  max-height: 65vh;
+  margin: 20px;
+}
+
+::ng-deep table.mat-mdc-table {
+  background-color: transparent !important;
+}
+
+::ng-deep th.mat-mdc-header-cell {
+  background-color: var(--bg-main) !important;
+  color: var(--primary) !important; 
+  font-weight: 600;
+  font-size: 15px;
+  border-bottom: 2px solid var(--border-color) !important;
+}
+
+::ng-deep td.mat-mdc-cell {
+  color: var(--text-main) !important;
+  border-bottom: 1px solid var(--border-color) !important;
+  font-size: 14px;
+}
+
+::ng-deep tr.mat-mdc-row, 
+::ng-deep tr.mat-mdc-header-row {
+  background-color: transparent !important;
+}
+
+::ng-deep .mat-sort-header-arrow {
+  color: var(--primary) !important;
+}
+
+::ng-deep .mat-mdc-paginator {
+  background-color: var(--bg-main) !important;
+  color: var(--text-main) !important;
+  border-top: 1px solid var(--border-color) !important;
+}
+
+::ng-deep .mat-mdc-paginator .mat-mdc-icon-button {
+  color: var(--text-main) !important;
+}
+
+::ng-deep .mat-mdc-paginator .mat-mdc-select-value {
+  color: var(--primary) !important;
+  font-weight: bold;
+}
+
+::ng-deep .mat-mdc-paginator .mat-mdc-select-arrow svg {
+  fill: var(--primary) !important;
+}
+
+.locked-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 60vh; 
+  text-align: center;
+  color: var(--text-main);
+  animation: fadeIn 0.4s ease-in-out;
+}
+
+.huge-lock {
+  font-size: 80px; 
+  width: 80px; 
+  height: 80px;
+  color: var(--primary) !important; 
+  margin-bottom: 20px; 
+  opacity: 0.9;
+}
+
+.locked-container h2 {
+  font-size: 26px;
+  font-weight: 500;
+  margin: 0 0 10px 0;
+  letter-spacing: 0.5px;
+}
+
+.locked-container p {
+  font-size: 16px;
+  opacity: 0.6;
+}
+
+.locked-container[hidden] {
+  display: none !important;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+::ng-deep .mat-mdc-dialog-container .mdc-dialog__surface {
+  background-color: #ffffff !important;
+  color: #1a1a1a !important;
+}
+
+::ng-deep .raport-bazowy {
+  padding: 24px;
+  background-color: #ffffff !important;
+  color: #1a1a1a !important;
+}
+
+::ng-deep .raport-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #d1d5db !important;
+  padding: 16px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  background-color: #f8fafc !important;
+}
+
+::ng-deep .raport-title {
+  margin: 0 0 8px 0;
+  color: #1e40af !important;
+  font-size: 22px;
+  font-weight: bold;
+}
+
+::ng-deep .raport-icon {
+  font-size: 64px;
+  height: 64px;
+  width: 64px;
+  color: #2563eb !important;
+}
+
+::ng-deep .raport-subtitle {
+  margin: 20px 0 10px 0;
+  color: #1e40af !important;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+::ng-deep .raport-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  border: 1px solid #cbd5e1 !important;
+  background-color: #ffffff !important;
+}
+
+::ng-deep .raport-table th {
+  padding: 10px 12px;
+  border: 1px solid #cbd5e1 !important;
+  background-color: #eff6ff !important;
+  color: #1e3a8a !important;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+::ng-deep .raport-table td {
+  padding: 10px 12px;
+  border: 1px solid #cbd5e1 !important;
+  color: #0f172a !important;
+  font-size: 13px;
+  background-color: #ffffff !important;
+}
+
+::ng-deep .raport-bazowy p,
+::ng-deep .raport-bazowy strong,
+::ng-deep .raport-bazowy span {
+  color: #1e293b !important;
+}
+
+::ng-deep .pdf-export-mode,
+::ng-deep .pdf-export-mode .raport-bazowy {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}
+
+::ng-deep .pdf-export-mode .raport-header {
+  background-color: #ffffff !important;
+  border: 2px solid #000000 !important;
+}
+
+::ng-deep .pdf-export-mode .raport-title { 
+  color: #1e40af !important; 
+}
+
+::ng-deep .pdf-export-mode .raport-subtitle { 
+  color: #000000 !important; 
+}
+
+::ng-deep .pdf-export-mode p,
+::ng-deep .pdf-export-mode strong,
+::ng-deep .pdf-export-mode span,
+::ng-deep .pdf-export-mode td,
+::ng-deep .pdf-export-mode th {
+  color: #000000 !important;
+  border-color: #000000 !important;
+}
+
+::ng-deep .pdf-export-mode .raport-table th { 
+  background-color: #f1f5f9 !important; 
+}
+
+::ng-deep .pdf-export-mode .raport-table { 
+  border: 2px solid #000000 !important; 
+}
+
+::ng-deep .pdf-export-mode .hide-in-pdf { 
+  display: none !important; 
+}
+
+::ng-deep .ukryj-wiersz { 
+  display: none !important; 
+}
+::ng-deep .patient-sort-panel.mat-mdc-select-panel,
+::ng-deep .patient-page-size-panel.mat-mdc-select-panel {
+  --mat-select-panel-background-color: #0e1b2e !important;
+  color: #f4f8ff !important;
+  background-color: #0e1b2e !important;
+  border: 1px solid var(--primary) !important;
+}
+
+
+::ng-deep .patient-sort-panel .mat-mdc-option,
+::ng-deep .patient-page-size-panel .mat-mdc-option {
+  --mat-option-label-text-color: #f4f8ff !important;
+  --mat-option-selected-state-label-text-color: #55a5ff !important;
+  --mat-option-hover-state-layer-color: rgba(46, 142, 255, 0.12) !important;
+  --mat-option-focus-state-layer-color: rgba(46, 142, 255, 0.12) !important;
+  --mat-option-selected-state-layer-color: rgba(46, 142, 255, 0.18) !important;
+
+  color: #f4f8ff !important;
+  background-color: #0e1b2e !important;
+}
+
+
+::ng-deep
+.patient-sort-panel
+.mat-mdc-option
+.mdc-list-item__primary-text,
+::ng-deep
+.patient-page-size-panel
+.mat-mdc-option
+.mdc-list-item__primary-text {
+  color: #f4f8ff !important;
+  -webkit-text-fill-color: #f4f8ff !important;
+  opacity: 1 !important;
+}
+
+
+::ng-deep
+.patient-sort-panel
+.mat-mdc-option.mdc-list-item--selected,
+::ng-deep
+.patient-page-size-panel
+.mat-mdc-option.mdc-list-item--selected {
+  background-color: rgba(46, 142, 255, 0.18) !important;
+}
+
+::ng-deep
+.patient-sort-panel
+.mat-mdc-option.mdc-list-item--selected
+.mdc-list-item__primary-text,
+::ng-deep
+.patient-page-size-panel
+.mat-mdc-option.mdc-list-item--selected
+.mdc-list-item__primary-text {
+  color: #55a5ff !important;
+  -webkit-text-fill-color: #55a5ff !important;
+  font-weight: 700 !important;
+}
+
+::ng-deep .patient-sort-panel .mat-pseudo-checkbox,
+::ng-deep .patient-page-size-panel .mat-pseudo-checkbox {
+  --mat-minimal-pseudo-checkbox-selected-checkmark-color: #55a5ff !important;
+  color: #55a5ff !important;
+}
+@media (max-width: 700px) {
+  .patients-toolbar {
+    margin: 0 10px 14px;
+  }
+
+  .neon-search-container {
+    width: 100%;
+  }
+
+  .search-checkbox:checked ~ .search-input {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  ::ng-deep .table-container,
+  ::ng-deep .mat-elevation-z8 {
+    max-height: none;
+    margin: 10px;
+    overflow: hidden !important;
+    border-radius: 14px;
+  }
+
+  .desktop-patients {
+    display: none;
+  }
+
+  .mobile-patients {
+    display: grid;
+    gap: 12px;
+    padding: 12px;
+  }
+
+  .mobile-sort-bar {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 48px;
+    align-items: start;
+    gap: 10px;
+    padding: 12px 12px 0;
+  }
+
+  .mobile-sort-bar mat-form-field {
+    width: 100%;
+  }
+
+  .mobile-sort-direction {
+    width: 48px;
+    height: 48px;
+    display: grid;
+    place-items: center;
+    padding: 0;
+    color: var(--primary);
+    background: var(--primary-soft);
+    border: 1px solid var(--primary);
+    border-radius: 12px;
+    cursor: pointer;
+  }
+
+  .mobile-sort-direction:hover,
+  .mobile-sort-direction:focus-visible {
+    color: #ffffff;
+    background: var(--primary);
+    outline: none;
+  }
+
+  .patient-card {
+    padding: 15px;
+    color: var(--text-main);
+    background: var(--bg-main);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: border-color 180ms ease, background 180ms ease;
+  }
+
+  .patient-card:hover,
+  .patient-card:focus-visible {
+    background: var(--primary-soft);
+    border-color: var(--primary);
+    outline: none;
+  }
+
+  .patient-card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .patient-avatar {
+    width: 44px;
+    height: 44px;
+    flex: 0 0 44px;
+    display: grid;
+    place-items: center;
+    color: #ffffff;
+    background: var(--primary);
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 700;
+  }
+
+  .patient-name {
+    min-width: 0;
+    flex: 1;
+  }
+
+  .patient-name span {
+    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 600;
+  }
+
+  .patient-name h3 {
+    margin: 3px 0 0;
+    overflow-wrap: anywhere;
+    font-size: 16px;
+  }
+
+  .patient-card-arrow {
+    color: var(--primary);
+  }
+
+  .patient-card-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border-color);
+  }
+
+  .patient-card-details div {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .patient-card-details span {
+    color: var(--text-muted);
+    font-size: 11px;
+  }
+
+  .patient-card-details strong {
+    overflow-wrap: anywhere;
+    font-size: 13px;
+  }
+
+  ::ng-deep .mat-mdc-paginator-container {
+    justify-content: center !important;
+    padding: 8px !important;
+  }
+
+  ::ng-deep .mat-mdc-paginator-page-size-label {
+    display: none;
+  }
+
+  .locked-container {
+    height: auto;
+    min-height: 55vh;
+    padding: 24px 14px;
+  }
+}
+
+@media (max-width: 390px) {
+  .patient-card-details {
+    grid-template-columns: 1fr;
+  }
+
+  ::ng-deep .mat-mdc-paginator-page-size {
+    margin-right: 0 !important;
+  }
+}

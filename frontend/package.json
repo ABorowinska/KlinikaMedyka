@@ -1,0 +1,55 @@
+{
+  "name": "frontend",
+  "version": "0.0.0",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test",
+    "dev": "ng serve --proxy-config proxy.conf.json"
+  },
+  "prettier": {
+    "printWidth": 100,
+    "singleQuote": true,
+    "overrides": [
+      {
+        "files": "*.html",
+        "options": {
+          "parser": "angular"
+        }
+      }
+    ]
+  },
+  "private": true,
+  "packageManager": "npm@11.9.0",
+  "dependencies": {
+    "@angular/cdk": "^21.2.12",
+    "@angular/common": "^21.1.0",
+    "@angular/compiler": "^21.1.0",
+    "@angular/core": "^21.1.0",
+    "@angular/forms": "^21.1.0",
+    "@angular/material": "^21.2.12",
+    "@angular/platform-browser": "^21.1.0",
+    "@angular/router": "^21.1.0",
+    "@ngx-translate/core": "^15.0.0",
+    "@ngx-translate/http-loader": "^8.0.0",
+    "angular-calendar": "^0.32.2",
+    "angular-draggable-droppable": "^9.0.1",
+    "angular-resizable-element": "^8.0.3",
+    "chart.js": "^4.5.1",
+    "date-fns": "^4.4.0",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^4.2.1",
+    "rxjs": "~7.8.0",
+    "tslib": "^2.3.0"
+  },
+  "devDependencies": {
+    "@angular/build": "^21.1.5",
+    "@angular/cli": "^21.1.5",
+    "@angular/compiler-cli": "^21.1.0",
+    "jsdom": "^27.1.0",
+    "typescript": "~5.9.2",
+    "vitest": "^4.0.8"
+  }
+}

@@ -1,0 +1,28 @@
+# Zależności
+**/node_modules/
+
+# Pliki wynikowe i cache
+**/dist/
+**/.angular/
+**/coverage/
+*.tsbuildinfo
+npm-debug.log*
+yarn-error.log*
+
+# Konfiguracja zawierająca hasła
+config.json
+.env
+.env.*
+!.env.example
+
+# Lokalne bazy danych
+data/*.sqlite3
+data/*.sqlite
+data/*.db
+data/*-journal
+data/*-wal
+data/*-shm
+
+# Pliki systemowe
+.DS_Store
+Thumbs.db

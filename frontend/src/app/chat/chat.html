@@ -1,0 +1,107 @@
+<div [hidden]="!auth.hasAnyRole(0,1,2)">
+<div class="chat-wrapper" [class.mobile-conversation-open]="mobilnyCzatOtwarty">
+  
+  <div class="chat-sidebar">
+    <div class="sidebar-header">
+      <h3>{{ 'CHAT.SIDEBAR_TITLE' | translate }}</h3>
+    </div>
+    
+    <div class="contact-list">
+      <div class="contact-item" 
+           [class.active]="wybranyOdbiorca === 'Wszyscy'" 
+           (click)="wybierzKontakt('Wszyscy')">
+        <div class="contact-avatar"><mat-icon>diversity_1</mat-icon></div>
+        <div class="contact-name">{{ 'CHAT.GENERAL_CHAT' | translate }}</div>
+      </div>
+      
+      <ng-container *ngFor="let osoba of odbiorcy">
+        <div class="contact-item" 
+             [class.active]="wybranyOdbiorca === osoba" 
+             (click)="wybierzKontakt(osoba)">
+          <div class="contact-avatar"><mat-icon>{{ getIcon(osoba) }}</mat-icon></div>
+          
+          <div class="contact-name">{{ getNazwa(osoba) | translate }}</div>
+        </div>
+      </ng-container>
+    </div>
+  </div>
+
+  <div class="chat-main">
+    
+    <div class="chat-header">
+      <button
+        type="button"
+        class="mobile-back-button"
+        (click)="wrocDoKontaktow()"
+        aria-label="Wróć do kontaktów"
+      >
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+
+      <div class="header-avatar"><mat-icon>{{ getIcon(wybranyOdbiorca) }}</mat-icon></div>
+      <div class="header-info">
+        
+        <h2>{{ wybranyOdbiorca === 'Wszyscy' ? ('CHAT.GENERAL_CHAT' | translate) : (getNazwa(wybranyOdbiorca) | translate) }}</h2>
+        <p>{{ wybranyOdbiorca === 'Wszyscy' ? ('CHAT.GENERAL_DESC' | translate) : ('CHAT.PRIVATE_DESC' | translate) }}</p>
+      </div>
+    </div>
+
+    <div class="chat-messages">
+      <ng-container *ngFor="let msg of widoczneWiadomosci">
+        <div class="message-wrapper" [class.my-message]="msg.author === auth.user()?.username">
+          
+          <div class="msg-avatar" *ngIf="msg.author !== auth.user()?.username" [matTooltip]="getNazwa(msg.author) | translate">
+            <mat-icon>{{ getIcon(msg.author) }}</mat-icon>
+          </div>
+
+          <div class="message-content">
+            <div class="message-info">
+              
+              <strong>{{ getNazwa(msg.author) | translate }}</strong> 
+              <span class="time">{{ msg.time | date:'HH:mm' }}</span>
+            </div>
+            <div class="message-bubble">
+              {{ msg.chat_msg || msg.text }}
+            </div>
+          </div>
+
+          <div class="msg-avatar my-avatar" *ngIf="msg.author === auth.user()?.username">
+            <mat-icon>{{ getIcon(msg.author) }}</mat-icon>
+          </div>
+        </div>
+      </ng-container>
+
+      <div *ngIf="widoczneWiadomosci.length === 0" class="empty-chat">
+        <mat-icon>chat_bubble_outline</mat-icon>
+        <p>{{ 'CHAT.EMPTY_STATE' | translate }}</p>
+      </div>
+    </div>
+
+    <div class="chat-input-area">
+      <input type="text" 
+             class="neon-input"
+             [(ngModel)]="message" 
+             (keydown)="onKeydown($event)" 
+             [placeholder]="'CHAT.INPUT_PLACEHOLDER' | translate">
+      
+      <button
+        type="button"
+        class="chat-send-button"
+        (click)="sendMessage()"
+        [disabled]="!message.trim()"
+        [attr.aria-label]="'CHAT.BTN_SEND' | translate"
+      >
+        <mat-icon>send</mat-icon>
+        <span class="send-label">{{ 'CHAT.BTN_SEND' | translate }}</span>
+      </button>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<div *ngIf="!auth.hasAnyRole(0,1,2)" class="locked-container">
+  <mat-icon class="huge-lock">lock</mat-icon>
+  <h2>{{ 'COMMON.LOCKED_TITLE' | translate }}</h2>
+  <p>{{ 'COMMON.LOCKED_LOGIN_DESC' | translate }}</p>
+</div>
