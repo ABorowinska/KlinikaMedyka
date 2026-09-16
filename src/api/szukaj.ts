@@ -3,7 +3,7 @@ import { Database } from 'better-sqlite3';
 
 export const szukajRouter = (db: Database) => {
     const router = Router();
-
+// GET /api/szukaj — wyszukiwanie pacjentów i lekarzy
     router.get('/', (req: Request, res: Response) => {
         try {
             const q = req.query.q as string;
@@ -13,8 +13,6 @@ export const szukajRouter = (db: Database) => {
             }
             
             const parametr = `%${q.trim()}%`;
-
-            //Tabela pacjenci poszukiwanie
             const pacjenciSql = `
                 SELECT 
                     id, 
@@ -26,8 +24,6 @@ export const szukajRouter = (db: Database) => {
                 WHERE imie LIKE ? OR nazwisko LIKE ? OR pesel LIKE ?
             `;
             const znalezieniPacjenci = db.prepare(pacjenciSql).all(parametr, parametr, parametr);
-
-            //tabela lekarze poszukiwanie
             const lekarzeSql = `
                 SELECT 
                     id, 
@@ -39,8 +35,6 @@ export const szukajRouter = (db: Database) => {
                 WHERE imie LIKE ? OR nazwisko LIKE ? OR specjalizacja LIKE ?
             `;
             const znalezieniLekarze = db.prepare(lekarzeSql).all(parametr, parametr, parametr);
-
-            //wspólny wynik
             const wyniki = [...znalezieniPacjenci, ...znalezieniLekarze];
 
             res.json({ 

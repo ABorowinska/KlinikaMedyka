@@ -35,6 +35,7 @@ async function main() {
     const connection = new Database(config.dbfilename);
     connection.pragma('foreign_keys = ON');
 
+    // Funkcja pomocnicza zapewnia sortowanie zgodne z polskim alfabetem w SQLite.
     connection.function('polish_sort_key', { deterministic: true }, (s: unknown) => {
         if (typeof s !== 'string') return s;
         const sortMap: Record<string, string> = {
@@ -64,7 +65,7 @@ async function main() {
         res.json({ wiadomosc: 'Witaj w nowym systemie kliniki! Serwer działa.' });
     });
 
-    //logowanie
+    // POST /api/auth — uwierzytelnienie użytkownika i przypisanie roli
     app.post('/api/auth', (req: Request, res: Response) => {
         const { username, password } = req.body;
         if (username === 'admin' && password === config.adminPassword) {
@@ -87,7 +88,7 @@ async function main() {
         res.status(204).send();
     });
 
-    //pobieranie chatu
+    // GET /api/chat/historia — pobranie ostatnich wiadomości
     app.get('/api/chat/historia', (req: Request, res: Response) => {
         try {
             const stmt = connection.prepare(`
@@ -110,7 +111,7 @@ async function main() {
 
     const httpServer = http.createServer(app);
 
-    //chat (websocet)
+    // Obsługa czatu i powiadomień przez WebSocket
     const wss = new WebSocketServer({ server: httpServer });
     app.set('wss', wss);
 

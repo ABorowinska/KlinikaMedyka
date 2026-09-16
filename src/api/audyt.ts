@@ -1,7 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { Database } from 'better-sqlite3';
 
-//zapis logów z innych plików
+/** Zapisuje zdarzenie w dzienniku audytu. */
 export function zapiszAudyt(db: Database, uzytkownik: string, operacja: string, szczegoly: string) {
     try {
         const stmt = db.prepare(`
@@ -16,7 +16,7 @@ export function zapiszAudyt(db: Database, uzytkownik: string, operacja: string, 
 
 export const audytRouter = (db: Database) => {
     const router = Router();
-
+// GET /api/audyt — pobranie 100 najnowszych zdarzeń
     router.get('/', (req: Request, res: Response) => {
         try {
             const sql = 'SELECT * FROM audyt ORDER BY data DESC LIMIT 100';

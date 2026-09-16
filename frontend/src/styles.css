@@ -340,10 +340,6 @@ body.light-theme {
   box-shadow: 0 18px 50px rgba(0, 0, 0, 0.24) !important;
 }
 
-
-
-/* Sortowanie pacjentów i paginator */
-
 html {
   --mat-select-panel-background-color: #0e1b2e !important;
   --mat-option-label-text-color: #f4f8ff !important;
@@ -395,8 +391,6 @@ html {
   font-weight: 700 !important;
 }
 
-/* Niebieski obrys pola sortowania */
-
 .mobile-sort-bar .mat-mdc-form-field {
   --mdc-outlined-text-field-focus-outline-color: #2e8eff !important;
   --mdc-outlined-text-field-focus-label-text-color: #2e8eff !important;
@@ -416,8 +410,6 @@ html {
 .mdc-notched-outline__trailing {
   border-color: #2e8eff !important;
 }
-
-/* Pole wyboru liczby pacjentów */
 
 .mat-mdc-paginator .mat-mdc-select {
   padding: 5px 8px;

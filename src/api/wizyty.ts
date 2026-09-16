@@ -4,7 +4,7 @@ import { zapiszAudyt } from './audyt';
 
 export const wizytyRouter = (db: Database) => {
     const router = Router();
-
+// GET /api/wizyty — pobranie wizyt z opcjonalnym filtrem daty i lekarza
     router.get('/', (req: Request, res: Response) => {
         try {
             const { lekarz_id, rola, data } = req.query;
@@ -39,7 +39,7 @@ export const wizytyRouter = (db: Database) => {
             res.status(500).json({ sukces: false, wiadomosc: error.message });
         }
     });
-
+// POST /api/wizyty — rejestracja nowej wizyty
     router.post('/', (req: Request, res: Response) => {
         try {
             const { pacjentId, lekarzId, gabinetId, data, godzina, notatka } = req.body;
@@ -77,7 +77,7 @@ export const wizytyRouter = (db: Database) => {
                 WHERE data LIKE ? AND (lekarz_id = ? OR pacjent_id = ?) AND LOWER(TRIM(status)) != 'anulowana'
             `;
             const kolizja = db.prepare(kolizjaSql).get(szukanaData, lekarzId, pacjentId) as { count: number };
-            
+            // Termin jest niedostępny, jeśli lekarz lub pacjent ma już aktywną wizytę.
             if (kolizja && kolizja.count > 0) {
                 return res.status(400).json({ 
                     sukces: false, 
@@ -90,7 +90,7 @@ export const wizytyRouter = (db: Database) => {
             
             zapiszAudyt(db, 'Recepcja', 'REJESTRACJA_WIZYTY', `Zarejestrowano wizytę dla pacjenta (ID: ${pacjentId}) do lekarza (ID: ${lekarzId}) na termin: ${dataWizyty}`);
 
-        //powiadomienie o nowej wizycie 
+        // Powiadomienie aktywnych klientów WebSocket o utworzeniu wizyty. 
             const wss = req.app.get('wss');
             if (wss) {
                 const powiadomienie = JSON.stringify({ 
@@ -108,7 +108,7 @@ export const wizytyRouter = (db: Database) => {
             res.status(500).json({ sukces: false, wiadomosc: error.message });
         }
     });
-
+// PATCH /api/wizyty/:id/status — aktualizacja statusu i notatki wizyty
     router.patch('/:id/status', (req: Request, res: Response) => {
   try {
     const { id } = req.params;

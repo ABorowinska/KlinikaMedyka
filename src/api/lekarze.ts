@@ -5,7 +5,7 @@ import { zapiszAudyt } from './audyt';
 export const lekarzeRouter = (db: Database) => {
     const router = Router();
 
-    //pobranie listy lekarzy
+    // GET /api/lekarze — pobranie listy lekarzy
     router.get('/', (req: Request, res: Response) => {
         try {
             const sql = `
@@ -22,7 +22,7 @@ export const lekarzeRouter = (db: Database) => {
         }
     });
 
-    //dodanie nowego lekarza
+    // POST /api/lekarze — dodanie lekarza
     router.post('/', (req: Request, res: Response) => {
         const { imie, nazwisko, specjalizacja, email } = req.body;
 
@@ -49,7 +49,7 @@ export const lekarzeRouter = (db: Database) => {
     });
 
   
-    //archwizacja lekarzy
+   // PATCH /api/lekarze/:id/archiwizuj — archiwizacja lub przywrócenie lekarza
     router.patch('/:id/archiwizuj', (req: Request, res: Response) => {
         const id = req.params.id;
         const { czy_aktywny } = req.body;
@@ -73,7 +73,7 @@ export const lekarzeRouter = (db: Database) => {
         }
     });
 
-     //edycja danych lekarza
+     // PUT /api/lekarze/:id — aktualizacja danych lekarza
     router.put('/:id', (req: Request, res: Response) => {
         try {
             const { id } = req.params;
@@ -93,7 +93,7 @@ export const lekarzeRouter = (db: Database) => {
         }
     });
 
-    //zmiana nr gabinetu lekarza
+    // PATCH /api/lekarze/:id/gabinet — zmiana gabinetu lekarza
     router.patch('/:id/gabinet', (req: Request, res: Response) => {
         try {
             const { id } = req.params;

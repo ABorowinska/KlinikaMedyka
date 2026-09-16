@@ -5,7 +5,7 @@ import { zapiszAudyt } from './audyt';
 export const gabinetyRouter = (db: Database) => {
     const router = Router();
 
- //pobranie listy gabinetów
+ // GET /api/gabinety — pobranie listy gabinetów
     router.get('/', (req: Request, res: Response) => {
         try {
             const sql = 'SELECT * FROM gabinety ORDER BY numer_gabinetu ASC';
@@ -17,7 +17,7 @@ export const gabinetyRouter = (db: Database) => {
         }
     });
 
-    //dodawanie nowego gabinetu
+    // POST /api/gabinety — dodanie gabinetu
     router.post('/', (req: Request, res: Response) => {
         const { numer, opis } = req.body;
 
@@ -39,7 +39,7 @@ export const gabinetyRouter = (db: Database) => {
             const stmt = db.prepare(sql);
             const info = stmt.run(numer);
 
-          //zapis do audytu
+    
             zapiszAudyt(db, 'Admin', 'DODANIE_GABINETU', `Utworzono nowy gabinet: ${numer}`);
 
             res.json({

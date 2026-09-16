@@ -8,7 +8,7 @@ const upload = multer({ storage: multer.memoryStorage() });
 export const pacjenciRouter = (db: Database) => {
     const router = Router();
 
-    //import plików z cvs plików  
+    // POST /api/pacjenci/import — import pacjentów z pliku CSV
     router.post('/import', upload.single('plik'), (req: Request, res: Response) => {
         try {
             if (!req.file) {
@@ -23,6 +23,7 @@ export const pacjenciRouter = (db: Database) => {
 
             const insertPacjent = db.prepare('INSERT OR IGNORE INTO pacjenci (imie, nazwisko, pesel, data_urodzenia, email) VALUES (?, ?, ?, ?, ?)');
 
+            // Transakcja wycofuje cały import, jeśli podczas zapisu wystąpi błąd.
             db.transaction(() => {
                 for (let i = 1; i < wiersze.length; i++) {
                     const linia = wiersze[i].trim();
@@ -49,7 +50,7 @@ export const pacjenciRouter = (db: Database) => {
                 }
             })();
 
-            //rejestracja zmian w audycie admina
+
             zapiszAudyt(db, 'Admin', 'IMPORT_CSV', `Zakończono import danych z pliku.Dodano pacjentów: ${dodanych}, pominięto duplikatów: ${pominietych}`);
 
             res.json({
@@ -63,7 +64,7 @@ export const pacjenciRouter = (db: Database) => {
         }
     });
 
-    //pobranie listy pacjentów
+    // GET /api/pacjenci — pobranie listy pacjentów
     router.get('/', (req: Request, res: Response) => {
         try {
             const sql = 'SELECT * FROM pacjenci ORDER BY polish_sort_key(nazwisko) ASC';
@@ -78,7 +79,7 @@ export const pacjenciRouter = (db: Database) => {
         }
     });
 
-    //dodanie nowego pacjenta
+    // POST /api/pacjenci — dodanie pacjenta
     router.post('/', (req: Request, res: Response) => {
         const { imie, nazwisko, pesel, data_urodzenia, email } = req.body;
 
@@ -104,7 +105,7 @@ export const pacjenciRouter = (db: Database) => {
         }
     });
 
-    //archwizacja pacjentów
+    // PATCH /api/pacjenci/:id/archiwizuj — archiwizacja lub przywrócenie pacjenta
     router.patch('/:id/archiwizuj', (req: Request, res: Response) => {
         const id = req.params.id;
         const { czy_aktywny } = req.body;
@@ -128,7 +129,7 @@ export const pacjenciRouter = (db: Database) => {
         }
     });
 
-    //edycja danych pacjenta
+    // PUT /api/pacjenci/:id — aktualizacja danych pacjenta
     router.put('/:id', (req: Request, res: Response) => {
         try {
             const { id } = req.params;
