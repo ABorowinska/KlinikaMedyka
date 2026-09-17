@@ -110,16 +110,19 @@ console.log("Baza Pacjentów została wygenerowana");
 //Tabela Lekarze
 console.log("Tworzenie tabeli Lekarze");
 connection.exec(`
-    CREATE TABLE IF NOT EXISTS lekarze (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        imie TEXT NOT NULL,
-        nazwisko TEXT NOT NULL,
-        specjalizacja TEXT,
-        email TEXT,
-        gabinet_id INTEGER UNIQUE,
-        czy_aktywny BOOLEAN DEFAULT 1,
-        FOREIGN KEY(gabinet_id) REFERENCES gabinety(id)
-    )
+   CREATE TABLE IF NOT EXISTS lekarze (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    osoba_id INTEGER UNIQUE NOT NULL,
+    imie TEXT NOT NULL,
+    nazwisko TEXT NOT NULL,
+    specjalizacja TEXT,
+    email TEXT,
+    gabinet_id INTEGER UNIQUE,
+    czy_aktywny BOOLEAN DEFAULT 1,
+
+    FOREIGN KEY(osoba_id) REFERENCES osoby(id) ON DELETE RESTRICT,
+    FOREIGN KEY(gabinet_id) REFERENCES gabinety(id)
+)
 `);
 
 const specjalizacje = [
@@ -133,9 +136,11 @@ const specjalizacje = [
   "Ortopeda",
   "Urolog",
 ];
-const insertLekarz = connection.prepare(
-  "INSERT OR IGNORE INTO lekarze (imie, nazwisko, specjalizacja, email, gabinet_id) VALUES (?, ?, ?, ?, ?)",
-);
+const insertLekarz = connection.prepare(`
+    INSERT OR IGNORE INTO lekarze
+    (osoba_id, imie, nazwisko, specjalizacja, email, gabinet_id)
+    VALUES (?, ?, ?, ?, ?, ?)
+`);
 connection.transaction(() => {
   for (let i = 0; i < config.LICZBA_LEKARZY; i++) {
     const imie = faker.person.firstName();
@@ -146,7 +151,11 @@ connection.transaction(() => {
       .toLowerCase();
     const gabinet_id = i + 1;
 
-    insertLekarz.run(imie, nazwisko, spec, email, gabinet_id);
+    const osobaResult = insertOsoba.run(imie, nazwisko, email, null);
+
+    const osoba_id = Number(osobaResult.lastInsertRowid);
+
+    insertLekarz.run(osoba_id, imie, nazwisko, spec, email, gabinet_id);
   }
 })();
 
@@ -176,8 +185,8 @@ const pacjentIds = connection
   .map((pacjent) => pacjent.id);
 
 const lekarzeDoWizyt = connection
-    .prepare('SELECT id, gabinet_id FROM lekarze')
-    .all();
+  .prepare("SELECT id, gabinet_id FROM lekarze")
+  .all();
 
 const gabinetIds = connection
   .prepare("SELECT id FROM gabinety")
@@ -188,12 +197,11 @@ const insertWizyta = connection.prepare(
 );
 connection.transaction(() => {
   for (let i = 0; i < config.LICZBA_WIZYT; i++) {
-
     const pacjent_id = faker.helpers.arrayElement(pacjentIds);
 
-const lekarz = faker.helpers.arrayElement(lekarzeDoWizyt);
-const lekarz_id = lekarz.id;
-const gabinet_id = lekarz.gabinet_id;
+    const lekarz = faker.helpers.arrayElement(lekarzeDoWizyt);
+    const lekarz_id = lekarz.id;
+    const gabinet_id = lekarz.gabinet_id;
 
     const dataObiekt = faker.date.soon({ days: 30 });
     const rok = dataObiekt.getFullYear();
