@@ -3,6 +3,7 @@ import { fakerPL as faker } from "@faker-js/faker";
 
 const require = createRequire(import.meta.url);
 const Database = require("better-sqlite3");
+const bcrypt = require("bcryptjs");
 
 const config = {
   dbfilename: "./data/przychodnia-v2-dev.sqlite3",
@@ -288,6 +289,73 @@ connection.exec(`
 `);
 
 console.log("Tabela Konta Role została utworzona");
+
+const insertKonto = connection.prepare(`
+    INSERT INTO konta_uzytkownikow (
+        osoba_id,
+        login,
+        haslo_hash,
+        wymus_zmiane_hasla
+    )
+    VALUES (?, ?, ?, ?)
+`);
+
+const insertKontoRola = connection.prepare(`
+    INSERT INTO konta_role (
+        konto_id,
+        rola_id
+    )
+    VALUES (?, ?)
+`);
+
+const adminPassword = process.env.SEED_ADMIN_PASSWORD;
+
+if (!adminPassword) {
+  throw new Error(
+    "Brak SEED_ADMIN_PASSWORD. Ustaw hasło przed wygenerowaniem bazy.",
+  );
+}
+
+//Generowanie Administratora
+const administrator = connection
+  .prepare(
+    `
+    SELECT
+        p.id AS pracownik_id,
+        p.osoba_id,
+        o.imie,
+        o.nazwisko
+    FROM pracownicy p
+    JOIN osoby o ON p.osoba_id = o.id
+    WHERE p.stanowisko = 'Administrator'
+    LIMIT 1
+`,
+  )
+  .get();
+
+const hasloHash = bcrypt.hashSync(adminPassword, 12);
+
+//Tworzenie konta
+const kontoResult = insertKonto.run(
+  administrator.osoba_id,
+  "admin",
+  hasloHash,
+  1,
+);
+
+const konto_id = Number(kontoResult.lastInsertRowid);
+
+const rolaAdmin = connection
+  .prepare(
+    `
+    SELECT id
+    FROM role
+    WHERE nazwa = 'ADMIN'
+`,
+  )
+  .get();
+
+insertKontoRola.run(konto_id, rolaAdmin.id);
 
 //Tabela Wizyty
 console.log("Tworzenie tabeli Wizyty");
