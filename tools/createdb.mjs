@@ -8,6 +8,7 @@ const config = {
   dbfilename: "./data/przychodnia-v2-dev.sqlite3",
   LICZBA_PACJENTOW: 50,
   LICZBA_LEKARZY: 10,
+  LICZBA_PRACOWNIKOW: 3,
   LICZBA_GABINETOW: 15,
   LICZBA_WIZYT: 150,
 };
@@ -136,11 +137,13 @@ const specjalizacje = [
   "Ortopeda",
   "Urolog",
 ];
+
 const insertLekarz = connection.prepare(`
     INSERT OR IGNORE INTO lekarze
     (osoba_id, imie, nazwisko, specjalizacja, email, gabinet_id)
     VALUES (?, ?, ?, ?, ?, ?)
 `);
+
 connection.transaction(() => {
   for (let i = 0; i < config.LICZBA_LEKARZY; i++) {
     const imie = faker.person.firstName();
@@ -160,6 +163,45 @@ connection.transaction(() => {
 })();
 
 console.log("Baza Lekarzy została wygenerowana");
+
+//Tabela Pracownicy
+console.log("Tworzenie tabeli Pracownicy");
+
+connection.exec(`
+    CREATE TABLE IF NOT EXISTS pracownicy (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        osoba_id INTEGER UNIQUE NOT NULL,
+        stanowisko TEXT NOT NULL,
+        czy_aktywny BOOLEAN DEFAULT 1,
+
+        FOREIGN KEY(osoba_id) REFERENCES osoby(id) ON DELETE RESTRICT
+    )
+`);
+
+const insertPracownik = connection.prepare(`
+    INSERT INTO pracownicy (osoba_id, stanowisko)
+    VALUES (?, ?)
+`);
+const stanowiska = ["Administrator", "Recepcja", "Recepcja"];
+
+connection.transaction(() => {
+  for (let i = 0; i < config.LICZBA_PRACOWNIKOW; i++) {
+    const imie = faker.person.firstName();
+    const nazwisko = faker.person.lastName();
+
+    const email = faker.internet
+      .email({ firstName: imie, lastName: nazwisko })
+      .toLowerCase();
+
+    const osobaResult = insertOsoba.run(imie, nazwisko, email, null);
+
+    const osoba_id = Number(osobaResult.lastInsertRowid);
+
+    insertPracownik.run(osoba_id, stanowiska[i]);
+  }
+})();
+
+console.log("Tabela Pracownicy została utworzona");
 
 //Tabela Wizyty
 console.log("Tworzenie tabeli Wizyty");
