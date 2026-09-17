@@ -203,6 +203,92 @@ connection.transaction(() => {
 
 console.log("Tabela Pracownicy została utworzona");
 
+//Tabela Role
+console.log("Tworzenie tabeli Role");
+
+connection.exec(`
+    CREATE TABLE IF NOT EXISTS role (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        nazwa TEXT UNIQUE NOT NULL
+        CHECK(nazwa IN ('ADMIN', 'LEKARZ', 'RECEPCJA', 'PACJENT'))
+    )
+`);
+
+const insertRola = connection.prepare(
+  "INSERT OR IGNORE INTO role (nazwa) VALUES (?)",
+);
+
+const roleSystemowe = ["ADMIN", "LEKARZ", "RECEPCJA", "PACJENT"];
+
+connection.transaction(() => {
+  for (const rola of roleSystemowe) {
+    insertRola.run(rola);
+  }
+})();
+
+console.log("Tabela Role została utworzona");
+
+//Tabela Konta Użytkowników
+console.log("Tworzenie tabeli Konta Użytkowników");
+
+connection.exec(`
+    CREATE TABLE IF NOT EXISTS konta_uzytkownikow (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        osoba_id INTEGER UNIQUE NOT NULL,
+        login TEXT COLLATE NOCASE UNIQUE NOT NULL,
+        haslo_hash TEXT NOT NULL,
+
+        aktywne BOOLEAN NOT NULL DEFAULT 1
+            CHECK(aktywne IN (0, 1)),
+
+        zablokowane BOOLEAN NOT NULL DEFAULT 0
+            CHECK(zablokowane IN (0, 1)),
+
+        nieudane_logowania INTEGER NOT NULL DEFAULT 0
+            CHECK(nieudane_logowania >= 0),
+
+        zablokowane_do DATETIME,
+
+        wymus_zmiane_hasla BOOLEAN NOT NULL DEFAULT 1
+            CHECK(wymus_zmiane_hasla IN (0, 1)),
+
+        ostatnie_logowanie_at DATETIME,
+        haslo_zmienione_at DATETIME,
+
+        utworzono_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        zaktualizowano_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+        FOREIGN KEY(osoba_id) REFERENCES osoby(id) ON DELETE RESTRICT
+    )
+`);
+
+console.log("Tabela Konta Użytkowników została utworzona");
+
+//Tabela Konta Role
+console.log("Tworzenie tabeli Konta Role");
+
+connection.exec(`
+    CREATE TABLE IF NOT EXISTS konta_role (
+        konto_id INTEGER NOT NULL,
+        rola_id INTEGER NOT NULL,
+
+        aktywna BOOLEAN NOT NULL DEFAULT 1
+            CHECK(aktywna IN (0, 1)),
+
+        PRIMARY KEY(konto_id, rola_id),
+
+        FOREIGN KEY(konto_id)
+            REFERENCES konta_uzytkownikow(id)
+            ON DELETE CASCADE,
+
+        FOREIGN KEY(rola_id)
+            REFERENCES role(id)
+            ON DELETE RESTRICT
+    )
+`);
+
+console.log("Tabela Konta Role została utworzona");
+
 //Tabela Wizyty
 console.log("Tworzenie tabeli Wizyty");
 connection.exec(`
