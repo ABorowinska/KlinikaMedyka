@@ -26,3 +26,5 @@ data/*-shm
 # Pliki systemowe
 .DS_Store
 Thumbs.db
+
+DEV_NOTES_PRIVATE.md
