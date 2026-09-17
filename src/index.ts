@@ -12,6 +12,7 @@ import { gabinetyRouter } from './api/gabinety';
 import { wizytyRouter } from './api/wizyty';
 import { audytRouter } from './api/audyt';
 import { szukajRouter } from './api/szukaj';
+import bcrypt from "bcryptjs";
 
 const CONFIG_PATH = path.resolve('config.json');
 
@@ -66,19 +67,77 @@ async function main() {
     });
 
     // POST /api/auth — uwierzytelnienie użytkownika i przypisanie roli
-    app.post('/api/auth', (req: Request, res: Response) => {
-        const { username, password } = req.body;
-        if (username === 'admin' && password === config.adminPassword) {
-            return res.json({ id: 1, username: 'admin', roles: [0] });
-        }
-        if (username === 'lekarz' && password === config.lekarzPassword) {
-            return res.json({ id: 2, username: 'lekarz', roles: [1] });
-        }
-        if (username === 'recepcja' && password === config.recepcjaPassword) {
-            return res.json({ id: 3, username: 'recepcja', roles: [2] });
-        }
-        res.status(401).json({ error: 'Błędny login lub hasło' });
+   app.post('/api/auth', (req: Request, res: Response) => {
+    const { username, password } = req.body;
+
+    if (!username || !password) {
+        return res.status(400).json({
+            error: 'Podaj login i hasło'
+        });
+    }
+
+    const konto = connection.prepare(`
+        SELECT
+            k.id,
+            k.osoba_id,
+            k.login,
+            k.haslo_hash,
+            k.aktywne,
+            k.zablokowane,
+            k.wymus_zmiane_hasla
+        FROM konta_uzytkownikow k
+        WHERE k.login = ? COLLATE NOCASE
+    `).get(username) as any;
+
+    if (!konto) {
+        return res.status(401).json({
+            error: 'Błędny login lub hasło'
+        });
+    }
+
+    if (!konto.aktywne || konto.zablokowane) {
+        return res.status(403).json({
+            error: 'Konto jest niedostępne'
+        });
+    }
+
+    const poprawneHaslo = bcrypt.compareSync(
+        password,
+        konto.haslo_hash
+    );
+
+    if (!poprawneHaslo) {
+        return res.status(401).json({
+            error: 'Błędny login lub hasło'
+        });
+    }
+
+    const role = connection.prepare(`
+        SELECT r.nazwa
+        FROM konta_role kr
+        JOIN role r ON r.id = kr.rola_id
+        WHERE kr.konto_id = ?
+          AND kr.aktywna = 1
+    `).all(konto.id) as { nazwa: string }[];
+
+    const mapaRol: Record<string, number> = {
+        ADMIN: 0,
+        LEKARZ: 1,
+        RECEPCJA: 2,
+        PACJENT: 3
+    };
+
+    const roles = role
+        .map(r => mapaRol[r.nazwa])
+        .filter(r => r !== undefined);
+
+    return res.json({
+        id: konto.id,
+        username: konto.login,
+        roles,
+        mustChangePassword: Boolean(konto.wymus_zmiane_hasla)
     });
+});
 
     app.get('/api/auth', (req: Request, res: Response) => {
         res.json(null);
