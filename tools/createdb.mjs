@@ -308,14 +308,39 @@ const insertKontoRola = connection.prepare(`
     VALUES (?, ?)
 `);
 
-const adminPassword = process.env.SEED_ADMIN_PASSWORD;
+function utworzKontoTestowe(osoba_id, login, haslo, nazwaRoli) {
+    const hasloHash = bcrypt.hashSync(haslo, 12);
 
-if (!adminPassword) {
-  throw new Error(
-    "Brak SEED_ADMIN_PASSWORD. Ustaw hasło przed wygenerowaniem bazy.",
-  );
+    const kontoResult = insertKonto.run(
+        osoba_id,
+        login,
+        hasloHash,
+        1
+    );
+
+    const konto_id = Number(kontoResult.lastInsertRowid);
+
+    const rola = connection.prepare(`
+        SELECT id
+        FROM role
+        WHERE nazwa = ?
+    `).get(nazwaRoli);
+
+    insertKontoRola.run(
+        konto_id,
+        rola.id
+    );
 }
 
+const adminPassword = process.env.SEED_ADMIN_PASSWORD;
+const doctorPassword = process.env.SEED_DOCTOR_PASSWORD;
+const receptionPassword = process.env.SEED_RECEPTION_PASSWORD;
+
+if (!adminPassword || !doctorPassword || !receptionPassword) {
+    throw new Error(
+        'Brak haseł developerskich do wygenerowania kont testowych.'
+    );
+}
 //Generowanie Administratora
 const administrator = connection
   .prepare(
@@ -333,29 +358,49 @@ const administrator = connection
   )
   .get();
 
-const hasloHash = bcrypt.hashSync(adminPassword, 12);
-
-//Tworzenie konta
-const kontoResult = insertKonto.run(
-  administrator.osoba_id,
-  "admin",
-  hasloHash,
-  1,
+  utworzKontoTestowe(
+    administrator.osoba_id,
+    'admin',
+    adminPassword,
+    'ADMIN'
 );
 
-const konto_id = Number(kontoResult.lastInsertRowid);
+const lekarzTestowy = connection.prepare(`
+    SELECT
+        l.osoba_id,
+        o.imie,
+        o.nazwisko
+    FROM lekarze l
+    JOIN osoby o ON l.osoba_id = o.id
+    WHERE l.czy_aktywny = 1
+    LIMIT 1
+`).get();
 
-const rolaAdmin = connection
-  .prepare(
-    `
-    SELECT id
-    FROM role
-    WHERE nazwa = 'ADMIN'
-`,
-  )
-  .get();
+utworzKontoTestowe(
+    lekarzTestowy.osoba_id,
+    'lekarz.test',
+    doctorPassword,
+    'LEKARZ'
+);
 
-insertKontoRola.run(konto_id, rolaAdmin.id);
+const recepcjaTestowa = connection.prepare(`
+    SELECT
+        p.osoba_id,
+        o.imie,
+        o.nazwisko
+    FROM pracownicy p
+    JOIN osoby o ON p.osoba_id = o.id
+    WHERE p.stanowisko = 'Recepcja'
+      AND p.czy_aktywny = 1
+    LIMIT 1
+`).get();
+
+utworzKontoTestowe(
+    recepcjaTestowa.osoba_id,
+    'recepcja.test',
+    receptionPassword,
+    'RECEPCJA'
+);
 
 //Tabela Wizyty
 console.log("Tworzenie tabeli Wizyty");
