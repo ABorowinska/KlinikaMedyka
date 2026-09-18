@@ -14,6 +14,7 @@ import { audytRouter } from "./api/audyt";
 import { szukajRouter } from "./api/szukaj";
 import bcrypt from "bcryptjs";
 import session from "express-session";
+import { requireAuth, requireRole } from './middleware/auth';
 
 const CONFIG_PATH = path.resolve("config.json");
 
@@ -113,6 +114,33 @@ async function main() {
   app.use("/api/szukaj", szukajRouter(connection));
 
   console.log("Baza danych przychodni podłączona pomyślnie");
+
+app.get('/api/secure-test', requireAuth, (req: Request, res: Response) => {
+    res.json({
+        message: 'Masz dostęp do chronionego endpointu',
+        user: req.session.user
+    });
+});
+
+app.get(
+    '/api/admin-test',
+    requireRole('ADMIN'),
+    (req: Request, res: Response) => {
+        res.json({
+            message: 'Masz dostęp jako administrator',
+        });
+    }
+);
+
+app.get(
+    '/api/lekarz-test',
+    requireRole('LEKARZ'),
+    (req: Request, res: Response) => {
+        res.json({
+            message: 'Masz dostęp jako lekarz',
+        });
+    }
+);
 
   app.get("/api/status", (req: Request, res: Response) => {
     res.json({ wiadomosc: "Witaj w nowym systemie kliniki! Serwer działa." });
