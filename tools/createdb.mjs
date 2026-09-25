@@ -335,8 +335,10 @@ function utworzKontoTestowe(osoba_id, login, haslo, nazwaRoli) {
 const adminPassword = process.env.SEED_ADMIN_PASSWORD;
 const doctorPassword = process.env.SEED_DOCTOR_PASSWORD;
 const receptionPassword = process.env.SEED_RECEPTION_PASSWORD;
+const patientPassword = process.env.SEED_PATIENT_PASSWORD;
 
-if (!adminPassword || !doctorPassword || !receptionPassword) {
+
+if (!adminPassword || !doctorPassword || !receptionPassword || !patientPassword) {
     throw new Error(
         'Brak haseł developerskich do wygenerowania kont testowych.'
     );
@@ -363,6 +365,34 @@ const administrator = connection
     'admin',
     adminPassword,
     'ADMIN'
+);
+
+const pacjentTestowy = connection.prepare(`
+    SELECT
+        p.id AS pacjent_id,
+        p.osoba_id,
+        o.imie,
+        o.nazwisko
+    FROM pacjenci p
+    JOIN osoby o ON p.osoba_id = o.id
+    WHERE p.czy_aktywny = 1
+    ORDER BY p.id ASC
+    LIMIT 1
+`).get();
+
+if (!pacjentTestowy) {
+    throw new Error('Nie znaleziono pacjenta testowego');
+}
+
+utworzKontoTestowe(
+    pacjentTestowy.osoba_id,
+    'pacjent.test',
+    patientPassword,
+    'PACJENT'
+);
+
+console.log(
+    `Utworzono konto pacjenta: pacjent.test (${pacjentTestowy.imie} ${pacjentTestowy.nazwisko})`
 );
 
 const lekarzTestowy = connection.prepare(`
