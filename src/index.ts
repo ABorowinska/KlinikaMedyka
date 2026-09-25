@@ -18,18 +18,17 @@ import { requireAuth, requireRole } from './middleware/auth';
 
 const CONFIG_PATH = path.resolve("config.json");
 
-declare module "express-session" {
-  interface SessionData {
-    user?: {
-      id: number;
-      osobaId: number;
-      username: string;
-      roleNames: string[];
-      mustChangePassword: boolean;
-    };
-  }
+declare module 'express-session' {
+    interface SessionData {
+        user?: {
+            id: number;
+            osobaId: number;
+            username: string;
+            roleNames: string[];
+            mustChangePassword: boolean;
+        };
+    }
 }
-
 function loadConfig() {
   if (!fs.existsSync(CONFIG_PATH)) {
     console.error(`Brak pliku konfiguracyjnego: ${CONFIG_PATH}`);
