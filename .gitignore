@@ -28,3 +28,6 @@ data/*-shm
 Thumbs.db
 
 DEV_NOTES_PRIVATE.md
+# Pliki testowych sesji
+cookies.txt
+*-cookies.txt
